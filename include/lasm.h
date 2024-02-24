@@ -4,7 +4,7 @@
 #define comSymb ';'
 
 #include <string.h>
-#include <malloc.h>
+#include <stdlib.h>
 
 typedef struct Lasm {
    char* lable;
@@ -30,6 +30,8 @@ char* findComment(char* str) {
          return substring(str, i + 2, strlen(str)-i + 1);
       }
    }
+
+   return "";
 }
 
 #endif

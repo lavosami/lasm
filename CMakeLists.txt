@@ -10,7 +10,7 @@ set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
 set(SOURCES
   ${SOURCE_DIR}/main.c
-  ${SOURCE_DIR}/lasm.h
+  ${INCLUDE_DIR}/lasm.h
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})
