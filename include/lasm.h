@@ -1,7 +1,7 @@
 #ifndef LASM_HEADER
 #define LASM_HEADER
 
-#define comSymb ';'
+#define commentChar ';'
 
 #include <string.h>
 #include <stdlib.h>
@@ -28,7 +28,7 @@ char* substring(char* str, size_t begin, size_t length) {
 
 char* findComment(char* str) {
   for (size_t i = 0; i < strlen(str); i++) {
-    if (str[i] == comSymb) {
+    if (str[i] == commentChar) {
       return substring(str, i + 2, strlen(str)-i + 1);
     }
   }
@@ -38,7 +38,7 @@ char* findComment(char* str) {
 char* getTag(char* str) {
   int8_t pos = 0;
   for (size_t i = 0; i < strlen(str); i++) {
-    if (str[i] == ';') {
+    if (str[i] == commentChar) {
       pos = -1;
       return "";
     }
