@@ -27,12 +27,11 @@ char* substring(char* str, size_t begin, size_t length) {
 }
 
 char* findComment(char* str) {
-  for (int i = 0; i < strlen(str); i++) {
+  for (size_t i = 0; i < strlen(str); i++) {
     if (str[i] == comSymb) {
       return substring(str, i + 2, strlen(str)-i + 1);
     }
   }
-
   return "";
 }
 
