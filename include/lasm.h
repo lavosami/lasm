@@ -9,46 +9,42 @@
 // НЕ НАЗЫВАЙ ПЕРЕМЕННЫЕ ОДНОЙ БУКВОЙ БЛЯТЬ.
 
 typedef struct Lasm {
-  char* lable;
-  char* oper;
+  char* tag;
+  char* operator;
   char* operand;
   char* comment;
 } Lasm;
 
-char* substring(char* str, size_t begin, size_t length) {
-  size_t it = 0;
-  char* result = (char*)malloc(sizeof(char) * length);
-  while (it < length) {
-    result[it] = str[begin+it-1];
-    it++;
+void getComment(char* str, Lasm* lasm) {
+  size_t i;
+  for (i = 0; i < strlen(str); i++) {
+    if (str[i] == commentChar) {
+      // Allocate memory for lasm->comment
+      lasm->comment = malloc(strlen(str) - i);
+      strncpy(lasm->comment, str + i + 1, strlen(str) - i - 1);
+      // Ensure the string is null-terminated
+      lasm->comment[strlen(str) - i - 1] = '\0';
+      return; // Exit after getting the comment
+    }
   }
-  result[it] = '\0';
-  return result;
+  // If there's no comment, set it to an empty string
+  lasm->comment = strdup("");
 }
 
-char* findComment(char* str) {
-  for (size_t i = 0; i < strlen(str); i++) {
-    if (str[i] == commentChar) {
-      return substring(str, i + 2, strlen(str)-i + 1);
+void getTag(char* str, Lasm* lasm) {
+  size_t i;
+  for (i = 0; i < strlen(str); i++) {
+    if (str[i] == ':') {
+      // Allocate memory for lasm->tag
+      lasm->tag = malloc(i + 1);
+      strncpy(lasm->tag, str, i);
+      // Ensure the string is null-terminated
+      lasm->tag[i] = '\0';
+      return; // Exit after getting the tag
     }
   }
-  return "";
-}
-
-char* getTag(char* str) {
-  int8_t pos = 0;
-  for (size_t i = 0; i < strlen(str); i++) {
-    if (str[i] == commentChar) {
-      pos = -1;
-      return "";
-    }
-
-    if (str[i] == ":") {
-      pos = i;
-    }
-  }
-  
-  return substring(str, 0, pos);
+  // If there's no tag, set it to an empty string
+  lasm->tag = strdup("");
 }
 
 #endif
