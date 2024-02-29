@@ -4,9 +4,9 @@ SECTION .data                       ; Секция данных
     message DB 'Hello, World!', 0   ; Объявление строки
 
 SECTION .text                       ; Секция кода
-GLOBAL _start                       ; Глобальная метка _start
+GLOBAL BEGIN                       ; Глобальная метка _start
 
-_start:                             ; Начало программы
+BEGIN:                             ; Начало программы
     ; Вывод строки
     mov     eax, 4                  ; Код системного вызова для вывода
     mov     ebx, 1                  ; Файловый дескриптор (stdout)
