@@ -6,6 +6,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+// НЕ НАЗЫВАЙ ПЕРЕМЕННЫЕ ОДНОЙ БУКВОЙ БЛЯТЬ.
+
 typedef struct Lasm {
   char* lable;
   char* oper;
@@ -13,15 +15,15 @@ typedef struct Lasm {
   char* comment;
 } Lasm;
 
-char* substring(char* s, int p, int l) {
-  int c = 0;
-  char* sub = (char*)malloc(sizeof(char) * l);
-  while (c < l) {
-    sub[c] = s[p+c-1];
-    c++;
+char* substring(char* str, size_t begin, size_t length) {
+  size_t it = 0;
+  char* result = (char*)malloc(sizeof(char) * length);
+  while (it < length) {
+    result[it] = str[begin+it-1];
+    it++;
   }
-  sub[c] = '\0';
-  return sub;
+  result[it] = '\0';
+  return result;
 }
 
 char* findComment(char* str) {
@@ -32,6 +34,22 @@ char* findComment(char* str) {
   }
 
   return "";
+}
+
+char* getTag(char* str) {
+  int8_t pos = 0;
+  for (size_t i = 0; i < strlen(str); i++) {
+    if (str[i] == ';') {
+      pos = -1;
+      return "";
+    }
+
+    if (str[i] == ":") {
+      pos = i;
+    }
+  }
+  
+  return substring(str, 0, pos);
 }
 
 #endif
