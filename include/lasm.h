@@ -6,8 +6,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-// НЕ НАЗЫВАЙ ПЕРЕМЕННЫЕ ОДНОЙ БУКВОЙ БЛЯТЬ.
-
 typedef struct Lasm {
   char* tag;
   char* operator;
@@ -16,8 +14,7 @@ typedef struct Lasm {
 } Lasm;
 
 void getComment(char* str, Lasm* lasm) {
-  size_t i;
-  for (i = 0; i < strlen(str); i++) {
+  for (size_t i = 0; i < strlen(str); i++) {
     if (str[i] == commentChar) {
       // Allocate memory for lasm->comment
       lasm->comment = malloc(strlen(str) - i);
@@ -32,8 +29,7 @@ void getComment(char* str, Lasm* lasm) {
 }
 
 void getTag(char* str, Lasm* lasm) {
-  size_t i;
-  for (i = 0; i < strlen(str); i++) {
+  for (size_t i = 0; i < strlen(str); i++) {
     if (str[i] == ':') {
       // Allocate memory for lasm->tag
       lasm->tag = malloc(i + 1);
