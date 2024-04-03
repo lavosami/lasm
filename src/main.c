@@ -3,14 +3,16 @@
 
 int main(int argc, char** argv) {
   Lasm model;
-  char* str = "_start:                             ; Начало программы";
+  char* str = "    message: DB 'Hello, World!'     ; Объявление строки";
   getTag(str, &model);
   getComment(str, &model);
-  printf("%s, %s\n", model.comment, model.tag);
+  getOperator(str, &model);
+  print(model);
 
   // Free allocated memory
   free(model.tag);
   free(model.comment);
+  free(model.operator);
   
   return 0;
 }
