@@ -70,13 +70,14 @@ void getComment(char* str, Lasm* model) {
 }
 
 void getTag(char* str, Lasm* model) {
+  char** words = split(str);
   for (size_t i = 0; i < strlen(str); i++) {
     if (str[i] == ':') {
       // Allocate memory for model->tag
       model->tag = malloc(i + 1);
-      strncpy(model->tag, str, i);
+      strcpy(model->tag, words[0]);
       // Ensure the string is null-terminated
-      model->tag[i] = '\0';
+      model->tag[i+1] = '\0';
       return; // Exit after getting the tag
     }
   }
@@ -86,7 +87,7 @@ void getTag(char* str, Lasm* model) {
 
 void getOperator(char* str, Lasm* model) {
   char** words = split(str);
-  if (strcmp(model->tag, words[0])) {
+  if (strcmp(model->tag, words[0]) == 0) {
     model->operator = (char*)malloc((strlen(words[1]) + 1) * sizeof(char));
     strcpy(model->operator, words[1]);
     free(words);
