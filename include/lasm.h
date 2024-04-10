@@ -107,19 +107,38 @@ void getOperand(char* str, Lasm* model) {
     // Call the split function to tokenize the input string
     char** words = split(str);
     
-    // Check if the second word in the string is not the same as the tag
-    if (strcmp(model->tag, words[1]) != 0) {
-        // If the second word is not the tag, it's considered as the operand
-        model->operand = (char*)malloc((strlen(words[1]) + 1) * sizeof(char));
-        strcpy(model->operand, words[1]);
-    } else {
-        // If the second word is the tag, then there is no operand
-        model->operand = strdup("");
+    // Initialize operand as an empty string
+    model->operand = strdup("");
+    
+    // Find the index of the operator
+    int operator_index = -1;
+    for (int i = 0; words[i] != NULL; i++) {
+        if (strcmp(words[i], model->operator) == 0) {
+            operator_index = i;
+            break;
+        }
+    }
+    
+    // Concatenate words between operator and comment (if present)
+    if (operator_index != -1) {
+        // Allocate memory for operand and concatenate the words between operator and comment
+        size_t operand_length = 0;
+        for (int i = operator_index + 1; words[i] != NULL && strcmp(words[i], ";") != 0; i++) {
+            operand_length += strlen(words[i]) + 1; // +1 for space between words
+        }
+        model->operand = (char*)malloc((operand_length + 1) * sizeof(char)); // +1 for null terminator
+        strcpy(model->operand, "");
+        for (int i = operator_index + 1; words[i] != NULL && strcmp(words[i], ";") != 0; i++) {
+            strcat(model->operand, words[i]);
+            strcat(model->operand, " ");
+        }
+        model->operand[operand_length] = '\0'; // Ensure the operand string is null-terminated
     }
     
     // Free the memory allocated for splitting the string into words
     free(words);
 }
+
 
 void print(Lasm model) {
   printf("Метка: %s, Оператор: %s, Операнд: %s, Комментарий: %s\n", model.tag, model.operator, model.operand, model.comment);
