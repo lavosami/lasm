@@ -103,6 +103,24 @@ void getOperator(char* str, Lasm* model) {
   free(words);
 }
 
+void getOperand(char* str, Lasm* model) {
+    // Call the split function to tokenize the input string
+    char** words = split(str);
+    
+    // Check if the second word in the string is not the same as the tag
+    if (strcmp(model->tag, words[1]) != 0) {
+        // If the second word is not the tag, it's considered as the operand
+        model->operand = (char*)malloc((strlen(words[1]) + 1) * sizeof(char));
+        strcpy(model->operand, words[1]);
+    } else {
+        // If the second word is the tag, then there is no operand
+        model->operand = strdup("");
+    }
+    
+    // Free the memory allocated for splitting the string into words
+    free(words);
+}
+
 void print(Lasm model) {
   printf("Метка: %s, Оператор: %s, Операнд: %s, Комментарий: %s\n", model.tag, model.operator, model.operand, model.comment);
 }

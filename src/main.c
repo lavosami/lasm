@@ -3,10 +3,11 @@
 
 int main(int argc, char** argv) {
   Lasm model;
-  char* str = "    message: DB 'Hello, World!'     ; Объявление строки";
+  char* str = "            int    21h";
   getTag(str, &model);
   getComment(str, &model);
   getOperator(str, &model);
+  getOperand(str, &model);
   print(model);
 
   // Free allocated memory
