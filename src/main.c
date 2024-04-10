@@ -3,8 +3,7 @@
 
 int main(int argc, char** argv) {
   Lasm model;
-  //char* str = "    message: DB 'Hello,World!'     ; Объявление строки";
-  char* str = "mov    dx,message     ; Объявление строки";
+  char* str = "    message: DB 'Hello,World!'     ; Объявление строки";
   getTag(str, &model);
   getComment(str, &model);
   getOperator(str, &model);

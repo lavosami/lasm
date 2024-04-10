@@ -104,13 +104,22 @@ void getOperator(char* str, Lasm* model) {
 }
 
 void getOperand(char* str, Lasm* model) {
-    // Call the split function to tokenize the input string
+    // Вызываем функцию split для токенизации входной строки
     char** words = split(str);
     
-    // Initialize operand as an empty string
+    // Инициализируем операнд пустой строкой
     model->operand = strdup("");
     
-    // Find the index of the operator
+    // Находим индекс точки с запятой, обозначающей начало комментария
+    int comment_index = -1;
+    for (int i = 0; words[i] != NULL; i++) {
+        if (strcmp(words[i], ";") == 0) {
+            comment_index = i;
+            break;
+        }
+    }
+
+    // Находим индекс оператора
     int operator_index = -1;
     for (int i = 0; words[i] != NULL; i++) {
         if (strcmp(words[i], model->operator) == 0) {
@@ -119,26 +128,29 @@ void getOperand(char* str, Lasm* model) {
         }
     }
     
-    // Concatenate words between operator and comment (if present)
+    // Конкатенируем слова между оператором и комментарием (если присутствует)
     if (operator_index != -1) {
-        // Allocate memory for operand and concatenate the words between operator and comment
+        // Определяем начальный и конечный индексы для операнда
+        int operand_start_index = operator_index + 1;
+        int operand_end_index = (comment_index != -1) ? comment_index : operator_index + 1;
+        
+        // Выделяем память для операнда и конкатенируем слова
         size_t operand_length = 0;
-        for (int i = operator_index + 1; words[i] != NULL && strcmp(words[i], ";") != 0; i++) {
-            operand_length += strlen(words[i]) + 1; // +1 for space between words
+        for (int i = operand_start_index; i < operand_end_index; i++) {
+            operand_length += strlen(words[i]) + 1; // +1 для пробела между словами
         }
-        model->operand = (char*)malloc((operand_length + 1) * sizeof(char)); // +1 for null terminator
+        model->operand = (char*)malloc((operand_length + 1) * sizeof(char)); // +1 для нулевого символа
         strcpy(model->operand, "");
-        for (int i = operator_index + 1; words[i] != NULL && strcmp(words[i], ";") != 0; i++) {
+        for (int i = operand_start_index; i < operand_end_index; i++) {
             strcat(model->operand, words[i]);
             strcat(model->operand, " ");
         }
-        model->operand[operand_length] = '\0'; // Ensure the operand string is null-terminated
+        model->operand[operand_length] = '\0'; // Убеждаемся, что строка операнда завершена нулевым символом
     }
     
-    // Free the memory allocated for splitting the string into words
+    // Освобождаем память, выделенную для токенизации строки на слова
     free(words);
 }
-
 
 void print(Lasm model) {
   printf("Метка: %s, Оператор: %s, Операнд: %s, Комментарий: %s\n", model.tag, model.operator, model.operand, model.comment);
