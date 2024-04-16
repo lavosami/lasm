@@ -3,7 +3,7 @@
 
 int main(int argc, char** argv) {
   Lasm model;
-  char* str = "    message: DB 'Hello,World!'     ; Объявление строки";
+  char* str = "; Программа для демонстрации разбора строк";
   getTag(str, &model);
   getComment(str, &model);
   getOperator(str, &model);
@@ -14,6 +14,7 @@ int main(int argc, char** argv) {
   free(model.tag);
   free(model.comment);
   free(model.operator);
+  free(model.operand);
   
   return 0;
 }

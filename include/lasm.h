@@ -2,11 +2,12 @@
 #define LASM_HEADER
 
 #define MAX_WORDS 128
-#define COMMENT_CHAR ';'
 
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+
+const char* COMMENT_CHAR = ";";
 
 typedef struct Lasm {
   char* tag;
@@ -56,7 +57,7 @@ char** split(char* input) {
 
 void getComment(char* str, Lasm* model) {
   for (size_t i = 0; i < strlen(str); i++) {
-    if (str[i] == COMMENT_CHAR) {
+    if (COMMENT_CHAR[0] == str[i]) {
       // Allocate memory for model->comment
       model->comment = malloc(strlen(str) - i);
       strncpy(model->comment, str + i + 1, strlen(str) - i - 1);
@@ -93,7 +94,7 @@ void getOperator(char* str, Lasm* model) {
     free(words);
     return;
   }
-  else {
+  else if (strcmp(COMMENT_CHAR, words[0]) == 1) {
     model->operator = malloc((strlen(words[0]) + 1) * sizeof(char));
     strcpy(model->operator, words[0]);
     free(words);
@@ -104,16 +105,13 @@ void getOperator(char* str, Lasm* model) {
 }
 
 void getOperand(char* str, Lasm* model) {
-    // Вызываем функцию split для токенизации входной строки
     char** words = split(str);
     
-    // Инициализируем операнд пустой строкой
     model->operand = strdup("");
     
-    // Находим индекс точки с запятой, обозначающей начало комментария
     int comment_index = -1;
     for (int i = 0; words[i] != NULL; i++) {
-        if (strcmp(words[i], ";") == 0) {
+        if (strcmp(words[i], COMMENT_CHAR) == 0) {
             comment_index = i;
             break;
         }
@@ -128,27 +126,25 @@ void getOperand(char* str, Lasm* model) {
         }
     }
     
-    // Конкатенируем слова между оператором и комментарием (если присутствует)
     if (operator_index != -1) {
-        // Определяем начальный и конечный индексы для операнда
+        // define begin and end index of operator
         int operand_start_index = operator_index + 1;
         int operand_end_index = (comment_index != -1) ? comment_index : operator_index + 1;
         
-        // Выделяем память для операнда и конкатенируем слова
+        // memory allocation
         size_t operand_length = 0;
         for (int i = operand_start_index; i < operand_end_index; i++) {
-            operand_length += strlen(words[i]) + 1; // +1 для пробела между словами
+            operand_length += strlen(words[i]) + 1; // +1 for space between the words
         }
-        model->operand = (char*)malloc((operand_length + 1) * sizeof(char)); // +1 для нулевого символа
+        model->operand = (char*)malloc((operand_length + 1) * sizeof(char));
         strcpy(model->operand, "");
         for (int i = operand_start_index; i < operand_end_index; i++) {
             strcat(model->operand, words[i]);
             strcat(model->operand, " ");
         }
-        model->operand[operand_length] = '\0'; // Убеждаемся, что строка операнда завершена нулевым символом
+        model->operand[operand_length] = '\0';
     }
     
-    // Освобождаем память, выделенную для токенизации строки на слова
     free(words);
 }
 
