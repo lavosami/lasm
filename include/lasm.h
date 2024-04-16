@@ -88,7 +88,7 @@ void getTag(char* str, Lasm* model) {
 
 void getOperator(char* str, Lasm* model) {
   char** words = split(str);
-  if (strcmp(model->tag, words[0]) == 0) {
+  if (strcmp(model->tag, words[0]) == 0 && strcmp(COMMENT_CHAR, words[1]) != 0) {
     model->operator = (char*)malloc((strlen(words[1]) + 1) * sizeof(char));
     strcpy(model->operator, words[1]);
     free(words);

@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include "lasm.h"
 
 int main(int argc, char** argv) {
