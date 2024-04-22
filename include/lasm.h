@@ -1,12 +1,7 @@
 #ifndef LASM_HEADER
 #define LASM_HEADER
 
-#define MAX_WORDS 128
-#define COMMENT_CHAR ';'
-
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
+#include "configuration.h"
 
 typedef struct Lasm
 {
