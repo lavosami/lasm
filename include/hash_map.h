@@ -4,23 +4,23 @@
 #include "configuration.h"
 
 typedef struct Element {
-  char*           key;            // Ключ элемента (строка)
-  int             value;            // Значение элемента (целое число)
-  struct Element* next; // Ссылка на следующий элемент в цепочке
+  char*           key;
+  int             value;
+  struct Element* next;
 } Element;
 
 typedef struct HashTable {
-  int       size;             // Размер хеш-таблицы (количество ячеек)
-  Element** table;       // Массив указателей на элементы
-  int       elementsCount;     // Количество элементов в хеш-таблице
-  int       (*hashFunction)(char* key); // Хеш-функция (принимает ключ и возвращает индекс)
+  int       size;
+  Element** table;
+  int       elementsCount;
+  int       (*hashFunction)(char* key);
 } HashTable;
 
 
 int hashFunction(char* key) {
   int hash = 0;
   for (int i = 0; key[i] != '\0'; i++) {
-    hash = (hash ^ key[i]) % KEYS_COUNT;  // xor-комбинирование многобайтовых ключей
+    hash = (hash ^ key[i]) % KEYS_COUNT;  // xor combining multibyte keys
   }
   return hash;
 }
@@ -32,15 +32,15 @@ HashTable* createHashTable() {
   table->table = (Element**)(KEYS_COUNT * sizeof(Element*));
 
   for (int i = 0; i < KEYS_COUNT; i++) {
-    table->table[i] = NULL; // Все ячейки изначально пустые
+    table->table[i] = NULL;
   }
 
-  table->hashFunction = hashFunction; // Установка хеш-функции
+  table->hashFunction = hashFunction; // hash function setting
   return table;
 }
 
 void insertElement(HashTable* table, char* key, int value) {
-  int index = table->hashFunction(key); // Получение индекса ячейки
+  int index = table->hashFunction(key);
 
   Element* newElement = (Element*)(sizeof(Element));
   newElement->key = (char*)malloc(strlen(key) + 1);
@@ -48,7 +48,7 @@ void insertElement(HashTable* table, char* key, int value) {
   newElement->value = value;
   newElement->next = NULL;
 
-  // Обработка коллизий методом цепочек
+  // handling collisions using the chain method
   if (table->table[index] != NULL) {
     newElement->next = table->table[index];
     table->table[index] = newElement;
@@ -56,7 +56,7 @@ void insertElement(HashTable* table, char* key, int value) {
     table->table[index] = newElement;
   }
 
-  table->elementsCount++; // Увеличение счетчика элементов
+  table->elementsCount++;
 }
 
 int findElement(HashTable* table, char* key) {
@@ -64,13 +64,11 @@ int findElement(HashTable* table, char* key) {
   Element* current = table->table[index];
 
   while (current != NULL) {
-    if (strcmp(current->key, key) == 0) {
-      return current->value; // Найдено!
-    }
+    if (strcmp(current->key, key) == 0) return current->value;
     current = current->next;
   }
 
-  return -1; // Не найдено
+  return -1;
 }
 
 void deleteElement(HashTable* table, char* key) {
@@ -80,7 +78,6 @@ void deleteElement(HashTable* table, char* key) {
 
   while (current != NULL) {
     if (strcmp(current->key, key) == 0) {
-      // Найдено! Удаление элемента из цепочки
       *prev = current->next;
       free(current->key);
       free(current);
