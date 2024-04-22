@@ -41,6 +41,7 @@ HashTable* createHashTable() {
 
 void insertElement(HashTable* table, char* key, int value) {
   int index = table->hashFunction(key);
+  int collisions = 0;
 
   Element* newElement = (Element*)(sizeof(Element));
   newElement->key = (char*)malloc(strlen(key) + 1);
@@ -50,26 +51,19 @@ void insertElement(HashTable* table, char* key, int value) {
 
   // handling collisions using the chain method
   if (table->table[index] != NULL) {
+    collisions++;
     newElement->next = table->table[index];
     table->table[index] = newElement;
-  } else {
+  }
+  else {
     table->table[index] = newElement;
   }
 
   table->elementsCount++;
+
+  printf("Number of collisions: %d\n", collisions);
 }
 
-int findElement(HashTable* table, char* key) {
-  int index = table->hashFunction(key);
-  Element* current = table->table[index];
-
-  while (current != NULL) {
-    if (strcmp(current->key, key) == 0) return current->value;
-    current = current->next;
-  }
-
-  return -1;
-}
 
 void deleteElement(HashTable* table, char* key) {
   int index = table->hashFunction(key);
