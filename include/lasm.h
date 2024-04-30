@@ -93,24 +93,29 @@ void getTag(char *str, Lasm *model)
 
 void getOperator(char *str, Lasm *model)
 {
-  char **words = split(str);
-  if (strcmp(model->tag, words[0]) == 0 && COMMENT_CHAR != words[1])
+  char **words = split(str); // Split the string into words
+  
+  // Set operator based on whether the tag matches the first word and if it's not a comment
+  if (strcmp(model->tag, words[0]) != 0 && words[0][0] != COMMENT_CHAR)
   {
-    model->operator=(char *) malloc((strlen(words[1]) + 1) * sizeof(char));
-    strcpy(model->operator, words[1]);
+    model->operator = strdup(words[0]); // Assign the first word as the operator
     free(words);
     return;
   }
-  else if (COMMENT_CHAR != words[0])
+
+  // Set operator based on whether the tag matches the first word and the second word isn't a comment
+  if (strcmp(model->tag, words[0]) == 0 && COMMENT_CHAR != words[1][0])
   {
-    model->operator= malloc((strlen(words[0]) + 1) * sizeof(char));
-    strcpy(model->operator, words[0]);
+    model->operator = strdup(words[1]); // Assign the second word as the operator
     free(words);
     return;
   }
-  model->operator= strdup("");
+
+  // Set an empty string as the operator if none of the conditions are met
+  model->operator = strdup("");
   free(words);
 }
+
 
 void getOperand(char *str, Lasm *model)
 {
