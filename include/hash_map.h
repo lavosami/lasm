@@ -3,99 +3,127 @@
 
 #include "configuration.h"
 
-typedef struct Element {
-  char*           key;
-  int             value;
-  struct Element* next;
-} Element;
+typedef struct Node {
+  unsigned char *key;       // Динамический массив для хранения ключа произвольной длины
+  char *value;           // Указатель на значение
+  struct Node *next;     // Ссылка на следующий элемент в цепочке
+} Node;
 
-typedef struct HashTable {
-  int       size;
-  Element** table;
-  int       elementsCount;
-  int       (*hashFunction)(char* key);
-} HashTable;
+typedef struct ChainedHashTable {
+  int m;                 // Размер хеш-таблицы
+  Node **table;           // Массив указателей на узлы
+} ChainedHashTable;
 
-
-int hashFunction(char* key) {
-  int hash = 0;
-  for (int i = 0; key[i] != '\0'; i++) {
-    hash = (hash ^ key[i]) % KEYS_COUNT;  // xor combining multibyte keys
+// Хеш-функция, использующая деление и XOR
+unsigned int hash_function(unsigned char *key, int m) {
+  unsigned int xor = 0;
+  for (int i = 0; i < strlen(key); i++) {
+    xor ^= key[i];
   }
-  return hash;
+  return xor % m;
 }
 
-HashTable* createHashTable() {
-  HashTable* table = (HashTable*)(sizeof(HashTable));
-  table->size = KEYS_COUNT;
-  table->elementsCount = 0;
-  table->table = (Element**)(KEYS_COUNT * sizeof(Element*));
+// Инициализация хеш-таблицы
+ChainedHashTable *create_hash_table(int m) {
+  ChainedHashTable *table = malloc(sizeof(ChainedHashTable));
+  if (table == NULL) {
+    return NULL;
+  }
 
-  for (int i = 0; i < KEYS_COUNT; i++) {
+  table->m = m;
+  table->table = malloc(m * sizeof(Node *));
+  if (table->table == NULL) {
+    free(table);
+    return NULL;
+  }
+
+  for (int i = 0; i < m; i++) {
     table->table[i] = NULL;
   }
 
-  table->hashFunction = hashFunction; // hash function setting
   return table;
 }
 
-void insertElement(HashTable* table, char* key, int value) {
-  int index = table->hashFunction(key);
-  int collisions = 0;
+// Вставка элемента в хеш-таблицу
+void insert_item(ChainedHashTable *table, unsigned char *key, char *value) {
+  int hash_index = hash_function(key, table->m);
 
-  Element* newElement = (Element*)(sizeof(Element));
-  newElement->key = (char*)malloc(strlen(key) + 1);
-  strcpy(newElement->key, key);
-  newElement->value = value;
-  newElement->next = NULL;
-
-  // handling collisions using the chain method
-  if (table->table[index] != NULL) {
-    collisions++;
-    newElement->next = table->table[index];
-    table->table[index] = newElement;
-  }
-  else {
-    table->table[index] = newElement;
+  Node *new_node = malloc(sizeof(Node));
+  if (new_node == NULL) {
+    return;
   }
 
-  table->elementsCount++;
+  new_node->key = malloc(strlen(key));
+  if (new_node->key == NULL) {
+    free(new_node);
+    return;
+  }
 
-  printf("Number of collisions: %d\n", collisions);
+  memcpy(new_node->key, key, strlen(key));
+  new_node->value = value;
+  new_node->next = table->table[hash_index];
+
+  table->table[hash_index] = new_node;
 }
 
+// Поиск элемента в хеш-таблице
+char* search_item(ChainedHashTable *table, unsigned char *key) {
+  int hash_index = hash_function(key, table->m);
 
-void deleteElement(HashTable* table, char* key) {
-  int index = table->hashFunction(key);
-  Element** prev = &table->table[index];
-  Element* current = table->table[index];
+  Node* current_node = table->table[hash_index];
+  while (current_node != NULL) {
+    if (memcmp(current_node->key, key, strlen(key)) == 0) {
+      return current_node->value;
+    }
+    current_node = current_node->next;
+  }
 
-  while (current != NULL) {
-    if (strcmp(current->key, key) == 0) {
-      *prev = current->next;
-      free(current->key);
-      free(current);
-      table->elementsCount--;
+  return NULL;
+}
+
+// Удаление элемента из хеш-таблицы
+void delete_item(ChainedHashTable *table, unsigned char *key) {
+  int hash_index = hash_function(key, table->m);
+
+  Node *previous_node = NULL;
+  Node *current_node = table->table[hash_index];
+
+  while (current_node != NULL) {
+    if (memcmp(current_node->key, key, strlen(key)) == 0) {
+      // Удаление из начала цепочки
+      if (previous_node == NULL) {
+        table->table[hash_index] = current_node->next;
+      } else {
+        previous_node->next = current_node->next;
+      }
+      free(current_node->key);
+      free(current_node);
       return;
     }
-    prev = &current->next;
-    current = current->next;
+
+    previous_node = current_node;
+    current_node = current_node->next;
   }
 }
 
-void clearHashTable(HashTable* table) {
-  for (int i = 0; i < table->size; i++) {
-    Element* current = table->table[i];
-    while (current != NULL) {
-      Element* next = current->next;
-      free(current->key);
-      free(current);
-      current = next;
+// Очистка хеш-таблицы
+void destroy_hash_table(ChainedHashTable *table) {
+  if (table == NULL) return;
+
+  for (int i = 0; i < table->m; i++) {
+    Node *current_node = table->table[i];
+    while (current_node != NULL) {
+      Node *next_node = current_node->next;
+      free(current_node->key);
+      free(current_node);
+      current_node = next_node;
     }
-    table->table[i] = NULL;
   }
+
   free(table->table);
   free(table);
 }
+
+
 
 #endif

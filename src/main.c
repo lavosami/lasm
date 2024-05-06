@@ -35,18 +35,17 @@
 // }
 
 int main() {
-  HashTable* table = createHashTable(); // Размер таблицы = 17
+  ChainedHashTable* table = create_hash_table(KEYS_COUNT);
 
-  insertElement(table, "key1", 10);
-  insertElement(table, "key2", 20);
-  insertElement(table, "key3", 30); // Возможна коллизия
+  insert_item(table, "key1", "shit");
+  insert_item(table, "key2", "mov");
+  insert_item(table, "key3", "mov");
 
-  int value = findElement(table, "key2");
-  printf("Value for key2: %d\n", value); // Выведет: Value for key2: 20
+  char* value = search_item(table, "key2");
+  printf("Value for key2: %s\n", value);
+  delete_item(table, "key1");
 
-  deleteElement(table, "key1");
-
-  clearHashTable(table);
+  destroy_hash_table(table);
 
   return 0;
 }
