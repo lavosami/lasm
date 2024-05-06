@@ -4,14 +4,14 @@
 #include "configuration.h"
 
 typedef struct Node {
-  unsigned char* key;       // Динамический массив для хранения ключа произвольной длины
-  char* value;           // Указатель на значение
-  struct Node* next;     // Ссылка на следующий элемент в цепочке
+  unsigned char* key;
+  char* value;
+  struct Node* next;
 } Node;
 
 typedef struct HashTable {
-  int m;                 // Размер хеш-таблицы
-  Node** table;           // Массив указателей на узлы
+  int m;
+  Node** table;
 } HashTable;
 
 unsigned int hashFunction(unsigned char* key, int m) {
