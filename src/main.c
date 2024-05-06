@@ -35,17 +35,17 @@
 // }
 
 int main() {
-  ChainedHashTable* table = create_hash_table(KEYS_COUNT);
+  HashTable* table = createTable(KEYS_COUNT);
 
-  insert_item(table, "key1", "shit");
-  insert_item(table, "key2", "mov");
-  insert_item(table, "key3", "mov");
+  insert(table, "key1", "shit");
+  insert(table, "key2", "mov");
+  insert(table, "key3", "mov");
 
-  char* value = search_item(table, "key2");
+  char* value = search(table, "key2");
   printf("Value for key2: %s\n", value);
-  delete_item(table, "key1");
+  delete(table, "key1");
 
-  destroy_hash_table(table);
+  deleteTable(table);
 
   return 0;
 }
