@@ -11,27 +11,28 @@ typedef struct Lasm {
 } Lasm;
 
 
-char **split(char *input) {
+char** split(char* input) {
   // allocate memory for strings array
-  char **words = (char **)malloc(MAX_WORDS * sizeof(char *));
+  char** words = (char**)malloc(MAX_WORDS * sizeof(char*));
   if (!words) {
     fprintf(stderr, "%s", "Memory allocation error.");
     exit(EXIT_FAILURE);
   }
 
   // Create a copy of the input string
-  char *temp_input = strdup(input);
+  char* temp_input = strdup(input);
   if (!temp_input) {
     fprintf(stderr, "%s", "Memory allocation error.");
     exit(EXIT_FAILURE);
   }
 
   // go word by word in line
-  char *token = strtok(temp_input, " \t\n\r");
+  char* token = strtok(temp_input, " \t\n\r");
   int count = 0;
   while (token != NULL && count < MAX_WORDS) {
     // allocate memory for the current word
     words[count] = (char *)malloc((strlen(token) + 1) * sizeof(char));
+
     if (!words[count]) {
       fprintf(stderr, "Memory allocation error.");
       exit(EXIT_FAILURE);
@@ -50,7 +51,7 @@ char **split(char *input) {
 }
 
 
-void getComment(char *str, Lasm *model) {
+void getComment(char* str, Lasm* model) {
   for (size_t i = 0; i < strlen(str); i++) {
     if (COMMENT_CHAR == str[i]) {
       // Allocate memory for model->comment
@@ -66,8 +67,8 @@ void getComment(char *str, Lasm *model) {
 }
 
 
-void getTag(char *str, Lasm *model) {
-  char **words = split(str);
+void getTag(char* str, Lasm* model) {
+  char** words = split(str);
   for (size_t i = 0; i < strlen(str); i++) {
     if (str[i] == ':') {
       // Allocate memory for model->tag
@@ -83,8 +84,8 @@ void getTag(char *str, Lasm *model) {
 }
 
 
-void getOperator(char *str, Lasm *model) {
-  char **words = split(str); // Split the string into words
+void getOperator(char* str, Lasm* model) {
+  char** words = split(str); // Split the string into words
   
   // Set operator based on whether the tag matches the first word and if it's not a comment
   if (strcmp(model->tag, words[0]) != 0 && words[0][0] != COMMENT_CHAR) {
@@ -106,9 +107,9 @@ void getOperator(char *str, Lasm *model) {
 }
 
 
-void getOperand(char *str, Lasm *model) {
+void getOperand(char* str, Lasm* model) {
   // Call the split function to tokenize the input string
-  char **words = split(str);
+  char** words = split(str);
 
   // Initialize operand with an empty string
   model->operand = strdup("");
@@ -141,7 +142,7 @@ void getOperand(char *str, Lasm *model) {
     for (int i = operand_start_index; i < operand_end_index && words[i] != NULL; i++) {
       operand_length += strlen(words[i]) + 1; // +1 for space between words
     }
-    model->operand = (char *)malloc((operand_length + 1) * sizeof(char));
+    model->operand = (char*)malloc((operand_length + 1) * sizeof(char));
     strcpy(model->operand, "");
     for (int i = operand_start_index; i < operand_end_index && words[i] != NULL; i++) {
       strcat(model->operand, words[i]);
