@@ -3,13 +3,13 @@
 
 #include "configuration.h"
 
-typedef struct Lasm
-{
+typedef struct Lasm {
   char *tag;
   char *operator;
   char *operand;
   char *comment;
 } Lasm;
+
 
 char **split(char *input) {
   // allocate memory for strings array
@@ -49,6 +49,7 @@ char **split(char *input) {
   return words;
 }
 
+
 void getComment(char *str, Lasm *model) {
   for (size_t i = 0; i < strlen(str); i++) {
     if (COMMENT_CHAR == str[i]) {
@@ -63,6 +64,7 @@ void getComment(char *str, Lasm *model) {
   // If there's no comment, set it to an empty string
   model->comment = strdup("");
 }
+
 
 void getTag(char *str, Lasm *model) {
   char **words = split(str);
@@ -79,6 +81,7 @@ void getTag(char *str, Lasm *model) {
   // If there's no tag, set it to an empty string
   model->tag = strdup("");
 }
+
 
 void getOperator(char *str, Lasm *model) {
   char **words = split(str); // Split the string into words
@@ -101,7 +104,6 @@ void getOperator(char *str, Lasm *model) {
   model->operator = strdup("");
   free(words);
 }
-
 
 
 void getOperand(char *str, Lasm *model) {
@@ -151,6 +153,7 @@ void getOperand(char *str, Lasm *model) {
   // Free the memory allocated for tokenizing the string into words
   free(words);
 }
+
 
 void print(Lasm model) {
   printf("Метка: %20s, Оператор: %20s, Операнд: %20s, Комментарий: %s\n", model.tag, model.operator, model.operand, model.comment);
