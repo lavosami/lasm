@@ -11,7 +11,7 @@ set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include")
 set(SOURCES
   ${SOURCE_DIR}/main.c
   ${INCLUDE_DIR}/lasm.h
-  ${INCLUDE_DIR}/hash_map.h
+  ${INCLUDE_DIR}/HashTable.h
   ${INCLUDE_DIR}/configuration.h
 )
 
