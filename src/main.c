@@ -1,5 +1,4 @@
 #include "lasm.h"
-#include <stdio.h>
 
 void main() {
   HashTable* mnemonics = newHashTable();

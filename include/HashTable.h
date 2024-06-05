@@ -35,7 +35,7 @@ HashTable* newHashTable() {
 }
 
 int hashCode(char* key, HashTable* table) {
-  int hash = 0;
+  unsigned int hash = 0;
   for (int i = 0; key[i] != '\0'; i++) {
     hash = hash + key[i];
   }
