@@ -12,7 +12,7 @@
 
 ## Test
 
-*ASM-file:*
+**ASM-file:**
 ```
 BEGIN 1000                       start
 
@@ -38,7 +38,7 @@ c:      DW 1
 END begin
 ```
 
-Output:
+**Output:**
 ```
 Address of the begin: 1000h
 Entry point: 1000h
